@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import { user_coll } from "./usermongoose.mjs";
-import { Router } from "express";
+import {  Router } from "express";
+import jwt from "jsonwebtoken"
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 
 dotenv.config()
 const code = parseInt(process.env.CODE_HASH)
 const user = Router()
+const key = process.env.key
 
 
 mongoose.connect(process.env.DB_CONNECTION)
@@ -14,8 +16,25 @@ mongoose.connect(process.env.DB_CONNECTION)
 .catch(()=>console.log("error de connection")
 )
 
+const authentification =(request,response,next)=>{
+    const auth =request.headers['authorization']
+    const token =auth && auth.split(' ')[1];
+    if (token) {
+        jwt.verify(token,key,(err)=>{
+            if (err) {
+                return response.status(403).send("")
+            }
+            next()
+        })
+    }
+    else{
+        response.status(401).send('access denied')
+    }
+}
+
+
 //to get all the user
-user.get('/api/users', async(req,res)=>{
+user.get('/api/users',authentification, async(req,res)=>{
     const data = await user_coll.find()
     data?res.status(200).send(data):res.sendStatus(404)
 })
@@ -46,7 +65,13 @@ user.post('/api/user/auth',async(req,res)=>{
         const user_email = await user_coll.findOne({email:email})
         if (user_email) {
             const isvalid= await bcrypt.compare(password,user_email.password)
-            isvalid?res.sendStatus(200):res.status(404).send("error in password")
+            if (isvalid) {
+                const token =jwt.sign({id:user.id},key,{"expiresIn":"1h"})
+                res.status(200).send({message:"user logged in!",token:token})
+            }
+            else{
+                res.status(404).send("user not found")
+            }
         }
         else{
             res.status(404).send('User not found.')
