@@ -7,5 +7,5 @@ const usery_mongoose = new mongoose.Schema({
   
 
 })
-export const user_coll =mongoose.model("user",usery_mongoose)
+export const user_coll =mongoose.model("users",usery_mongoose)
 

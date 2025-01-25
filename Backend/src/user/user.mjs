@@ -13,11 +13,13 @@ mongoose.connect(process.env.DB_CONNECTION)
 .then(()=>console.log('connected to user'))
 .catch(()=>console.log("error de connection")
 )
+
+//to get all the user
 user.get('/api/users', async(req,res)=>{
     const data = await user_coll.find()
     data?res.status(200).send(data):res.sendStatus(404)
 })
-
+//route to add a user
 user.post('/api/user/add',async(req,res)=>{
     const {nom,email,password}=req.body
     const data = await user_coll.find()
@@ -36,6 +38,27 @@ user.post('/api/user/add',async(req,res)=>{
     }
 })
 
+
+// Route to authenticate and check the existence of a user
+user.post('/api/user/auth',async(req,res)=>{
+    const {email,password}=req.body
+    if (email && password) {
+        const user_email = await user_coll.findOne({email:email})
+        if (user_email) {
+            const isvalid= await bcrypt.compare(password,user_email.password)
+            isvalid?res.sendStatus(200):res.status(404).send("error in password")
+        }
+        else{
+            res.status(404).send('User not found.')
+        }
+    }
+    else{
+        res.sendStatus(400)
+    }
+})
+  
+
+//to delete a user using his id
 user.delete('/api/user/delete/:id',async(req,res)=>{
     const {params:{id}}=req
     const parsed= parseInt(id)
@@ -47,6 +70,8 @@ user.delete('/api/user/delete/:id',async(req,res)=>{
         return res.sendStatus(400)
     }
 })
+
+//to udpade a user using his id
 
 user.put('/api/user/mod/:id',async(req,res)=>{
     const {params:{id},body:{nom,email,password}}=req
