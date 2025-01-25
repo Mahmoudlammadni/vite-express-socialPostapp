@@ -47,4 +47,25 @@ user.delete('/api/user/delete/:id',async(req,res)=>{
         return res.sendStatus(400)
     }
 })
+
+user.put('/api/user/mod/:id',async(req,res)=>{
+    const {params:{id},body:{nom,email,password}}=req
+    const parse_id=parseInt(id)
+    if (!isNaN(id)) {
+        if (isNaN(nom && email)&& password) {
+            const hashed_password = await bcrypt.hash(password,code)
+            console.log(hashed_password);
+            const the_user= {id:parse_id,nom:nom,email:email,password:hashed_password}
+            const Modified =await user_coll.findOneAndUpdate({id:parse_id},the_user);
+            const data = await user_coll.find()
+            Modified?res.status(200).send(data):res.sendStatus(404)
+        }
+        else{
+            return res.status(404).send("bad given data")
+        }
+    }
+    else{
+        return res.status(404).send("id should be a number")
+    }
+})
 export default user
