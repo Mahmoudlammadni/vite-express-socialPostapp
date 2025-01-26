@@ -1,20 +1,42 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from "axios";
 
-function App2() {
-  const [isLoginForm, setIsLoginForm] = useState(true); // State to toggle between login and signup
-
+function App() {
+  const [isLoginForm, setIsLoginForm] = useState(true);
+  const [email,setemail]=useState('')
+  const [password,setpassword]=useState('')
   const toggleForm = () => {
-    setIsLoginForm(!isLoginForm); // Toggle between login and signup forms
+    setIsLoginForm(!isLoginForm); 
   };
-function l_in(e) {
-    e.preventDefault()
-    alert('log in')
-    
+
+  
+  function l_in(e) {
+    e.preventDefault();
+    const user = { email: email, password: password };
+
+    axios.post("http://localhost:3019/api/user/auth", user)
+        .then((response) => {
+            if (response.data.message) {
+              alert(response.data.token)
+            }
+        })
+        .catch((error) => {
+               if (error.status=404){
+                 alert('User not found or error in password ')
+                }
+                else if (error.status=400){
+                alert("Email and password are required.")
+              }
+              else{
+                alert("Login failed. Please check your email and password.");
+              }
+        });
 }
+
 function s_up(e) {
     e.preventDefault()
-    alert('sign up')
+
 }
   return (
     <>
@@ -32,11 +54,13 @@ function s_up(e) {
                 <h2 className="text-center mb-4" >Login</h2>
                 <div className="input_box mb-3">
                   <input type="email" placeholder="Enter your email" className="form-control"required
+                    onChange={(e)=>setemail(e.target.value)}
                   />
                   <i className="uil uil-envelope-alt email"></i>
                 </div>
                 <div className="input_box mb-3">
                   <input type="password" placeholder="Enter your password" className="form-control" required
+                  onChange={(e)=>setpassword(e.target.value)}
                   />
                   <i className="uil uil-lock password"></i>
                   <i className="uil uil-eye-slash pw_hide"></i>
@@ -95,4 +119,4 @@ function s_up(e) {
   );
 }
 
-export default App2;
+export default App;

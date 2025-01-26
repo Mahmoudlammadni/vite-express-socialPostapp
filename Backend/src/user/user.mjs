@@ -4,11 +4,17 @@ import {  Router } from "express";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import cors from "cors"
+
 
 dotenv.config()
 const code = parseInt(process.env.CODE_HASH)
 const user = Router()
 const key = process.env.key
+user.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
 
 
 mongoose.connect(process.env.DB_CONNECTION)
@@ -66,11 +72,11 @@ user.post('/api/user/auth',async(req,res)=>{
         if (user_email) {
             const isvalid= await bcrypt.compare(password,user_email.password)
             if (isvalid) {
-                const token =jwt.sign({id:user.id},key,{"expiresIn":"1h"})
+                const token =jwt.sign({id:user_email.id},key,{"expiresIn":"1h"})
                 res.status(200).send({message:"user logged in!",token:token})
             }
             else{
-                res.status(404).send("user not found")
+                res.status(404).send("error in password")
             }
         }
         else{
@@ -78,7 +84,7 @@ user.post('/api/user/auth',async(req,res)=>{
         }
     }
     else{
-        res.sendStatus(400)
+        res.status(400).send("Email and password are required.")
     }
 })
   
