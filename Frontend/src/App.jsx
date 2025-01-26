@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
+import { add } from './action';
+import {useDispatch} from "react-redux"
+
 
 function App() {
   const [isLoginForm, setIsLoginForm] = useState(true);
@@ -10,6 +13,7 @@ function App() {
   const [nom,setnom]=useState('')
   const [email2,setemail2]=useState('')
   const [password2,setpassword2]=useState('')
+  const dis= useDispatch()
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm); 
   };
@@ -21,7 +25,8 @@ function App() {
     axios.post("http://localhost:3019/api/user/auth", user)
         .then((response) => {
             if (response.data.message) {
-              alert(response.data.token)
+              alert('logged in ')
+              dis(add(response.data.token))
             }
         })
         .catch((error) => {
