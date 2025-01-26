@@ -6,6 +6,10 @@ function App() {
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [email,setemail]=useState('')
   const [password,setpassword]=useState('')
+
+  const [nom,setnom]=useState('')
+  const [email2,setemail2]=useState('')
+  const [password2,setpassword2]=useState('')
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm); 
   };
@@ -14,7 +18,6 @@ function App() {
   function l_in(e) {
     e.preventDefault();
     const user = { email: email, password: password };
-
     axios.post("http://localhost:3019/api/user/auth", user)
         .then((response) => {
             if (response.data.message) {
@@ -36,7 +39,11 @@ function App() {
 
 function s_up(e) {
     e.preventDefault()
-
+    const add_user={nom:nom,email:email2,password:password2}
+    axios.post("http://localhost:3019/api/user/add",add_user)
+    .then((res)=>alert("added"))
+    .catch((err)=>console.log(err)
+    )
 }
   return (
     <>
@@ -84,26 +91,24 @@ function s_up(e) {
               <form action="#" onSubmit={s_up}>
                 <h2 className="text-center mb-4">Signup</h2>
                 <div className="input_box mb-3">
-                  <input type="email"placeholder="Enter your name"className="form-control"required
+                  <input type="nom"placeholder="Enter your name"className="form-control"required
+                  onChange={(e)=>setnom(e.target.value)}
                   />
                 </div>
                 <div className="input_box mb-3">
                   <input type="email"placeholder="Enter your email"className="form-control"required
+                  onChange={(e)=>setemail2(e.target.value)}
                   />
                   <i className="uil uil-envelope-alt email"></i>
                 </div>
                 <div className="input_box mb-3">
                   <input type="password"placeholder="Create password"className="form-control"required
+                  onChange={(e)=>setpassword2(e.target.value)}
                   />
                   <i className="uil uil-lock password"></i>
                   <i className="uil uil-eye-slash pw_hide"></i>
                 </div>
-                <div className="input_box mb-3">
-                  <input type="password"placeholder="Confirm password"className="form-control"required
-                  />
-                  <i className="uil uil-lock password"></i>
-                  <i className="uil uil-eye-slash pw_hide"></i>
-                </div>
+               
                 <button className="btn btn-primary w-100 mt-3" >Signup  Now</button>
                 <div className="login_signup mt-3 text-center">
                   Already have an account? <a href="#" onClick={toggleForm}>Login</a>
