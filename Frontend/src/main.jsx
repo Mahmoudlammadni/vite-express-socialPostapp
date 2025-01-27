@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
-import App from './App.jsx'
+import App from './LogIn.jsx'
 import { Provider } from 'react-redux'
 import { legacy_createStore } from 'redux'
 import redux from './redux.jsx'
