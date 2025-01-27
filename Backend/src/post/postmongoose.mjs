@@ -9,6 +9,6 @@ const post_mongoose = new mongoose.Schema({
 
 })
 
-export const post_coll =mongoose.model("post",post_mongoose)
+export const post_coll =mongoose.model("posts",post_mongoose)
 
 
