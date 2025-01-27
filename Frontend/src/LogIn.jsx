@@ -3,9 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import { add } from './action';
 import {useDispatch} from "react-redux"
+import { useNavigate } from 'react-router-dom';
 
-
-function App() {
+function Login_form() {
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [email,setemail]=useState('')
   const [password,setpassword]=useState('')
@@ -14,6 +14,7 @@ function App() {
   const [email2,setemail2]=useState('')
   const [password2,setpassword2]=useState('')
   const dis= useDispatch()
+  const nav= useNavigate()
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm); 
   };
@@ -27,6 +28,8 @@ function App() {
             if (response.data.message) {
               alert('logged in ')
               dis(add(response.data.token))
+             nav('/p')
+              
             }
         })
         .catch((error) => {
@@ -124,9 +127,8 @@ function s_up(e) {
         </div>
       </section>
 
-      <script src="script.js"></script>
     </>
   );
 }
 
-export default App;
+export default Login_form;
