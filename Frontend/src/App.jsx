@@ -1,25 +1,10 @@
-import { BrowserRouter, Route, Routes, Link, useLocation, data } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, } from 'react-router-dom';
 import Post from './posts';
 import Login_form from './LogIn';
-import { useSelector } from 'react-redux';
+import Navigation from './navigation';
 
-function Navigation() {
-  const location = useLocation();
-  const token = useSelector((data)=>data.token)
-    
-  if (!token  || location.pathname === '/') {
-    return null; 
-  }
+import Newpost from './Newpost';
 
-  return (
-    
-    <nav>
-        {console.log(token)}
-        
-      <Link to="/p">post</Link>
-    </nav>
-  );
-}
 export default function App() {
   return (
     <BrowserRouter>
@@ -28,6 +13,7 @@ export default function App() {
       
         <Route path="/" element={<Login_form />} />
         <Route path="/p" element={<Post />} />
+        <Route path="/po" element={<Newpost />} />
        
       </Routes> 
     </BrowserRouter>
