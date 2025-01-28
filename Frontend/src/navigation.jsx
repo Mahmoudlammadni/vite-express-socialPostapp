@@ -1,9 +1,9 @@
-import { BrowserRouter, Route, Routes, Link, useLocation, data } from 'react-router-dom';
-
+import { Link, useLocation } from 'react-router-dom';
 function Navigation() {
     const location = useLocation();
-      
-    if (location.pathname === '/') {
+    if ( location.pathname === '/') {
+       
+        
       return null; 
     }
     return (
@@ -20,6 +20,11 @@ function Navigation() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/po" style={{ color: "blue", fontWeight: "bold" }}>
                     New Post
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/s" style={{ color: "blue", fontWeight: "bold" }}>
+                    Saved
                   </Link>
                 </li>
               </ul>

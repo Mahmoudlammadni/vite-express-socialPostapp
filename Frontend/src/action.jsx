@@ -1,7 +1,7 @@
 export const add =(tkn)=>{
     return{
           type :"add",
-          payload : "tkn"
+          payload : tkn
     }
   
 }
@@ -9,7 +9,15 @@ export const add =(tkn)=>{
 export const remove =(tkn)=>{
     return{
           type :"remove",
-          payload : "tkn"
+          payload : tkn
+    }
+  
+}
+
+export const save =(ps)=>{
+    return{
+          type :"save",
+          payload : ps
     }
   
 }
