@@ -29,4 +29,32 @@ post.post('/api/add/post', async (req, res) => {
     }
 });
 
+post.patch('/api/post/modify/:idp/:idu',async(req,res)=>{
+const {idp,idu}=req.params
+const id_post = parseInt(idp)
+const id_user = parseInt(idu)
+if (!isNaN(id_post && id_user)) {
+ const target_post = await post_coll.findOne({id:id_post})
+ if (target_post) {
+    const liked_People = target_post.liked
+    if (!liked_People.includes(id_user)) {
+        const like = await post_coll.findOneAndUpdate({id:id_post},{$inc:{"likes":1},$push:{"liked":id_user}})
+        const data = await post_coll.find()
+        res.status(200).send(data)
+    }
+    else{
+        const like = await post_coll.findOneAndUpdate({id:id_post},{$inc:{"likes":-1},$pull:{"liked":id_user}})
+        const data = await post_coll.find()
+        res.status(200).send(data)
+    }
+ } 
+ else{
+    res.sendStatus(404)
+ } 
+}
+else{
+    res.sendStatus(400)
+ }
+})
+
 export default post

@@ -73,7 +73,7 @@ user.post('/api/user/auth',async(req,res)=>{
             const isvalid= await bcrypt.compare(password,user_email.password)
             if (isvalid) {
                 const token =jwt.sign({id:user_email.id},key,{"expiresIn":"1h"})
-                res.status(200).send({message:"user logged in!",token:token})
+                res.status(200).send({message:"user logged in!",token:token,id:user_email.id})
             }
             else{
                 res.status(404).send("error in password")

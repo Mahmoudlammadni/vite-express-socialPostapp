@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-import { add } from './action';
+import { add  ,takeid } from './action';
 import {useDispatch} from "react-redux"
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +28,7 @@ function Login_form() {
             if (response.data.message) {
               alert('logged in ')
               dis(add(response.data.token))
+              dis(takeid(response.data.id))
              nav('/p')
               
             }
@@ -51,6 +52,7 @@ function s_up(e) {
     axios.post("http://localhost:3019/api/user/add",add_user)
     .then((res)=>alert("added"))
     .catch((err)=>console.log(err)
+    
     )
 }
   return (

@@ -1,6 +1,7 @@
 const initialState = {
     token : {},
-    saved_posts: []
+    saved_posts: [],
+    id: {}
 }
 
 
@@ -20,6 +21,8 @@ const redux = (state = initialState, action) => {
        
       case "remove":
         return { ...state, token: null }; 
+      case "takeid":
+        return {...state,id:action.payload}
       default:
         return state; 
     }

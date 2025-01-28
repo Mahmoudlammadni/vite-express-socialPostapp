@@ -21,3 +21,11 @@ export const save =(ps)=>{
     }
   
 }
+
+export function takeid(id) {
+    return{
+        type : "takeid",
+        payload : id
+    }
+    
+}
