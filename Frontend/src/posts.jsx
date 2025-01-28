@@ -2,29 +2,69 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { save } from "./action";
+import { useSelector } from "react-redux";
 
 export default function Post() {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
+  const [i,seti]=useState(0)
   const dispatch = useDispatch();
+  const id_user = useSelector((data)=>data.id)
 
   useEffect(() => {
     axios
       .get("http://localhost:3019/api/post")
       .then((res) => setPosts(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [i]);
 
-  const toggleLike = (id) => {
-    setLikedPosts((prevl) =>
-      prevl.includes(id)? prevl.filter((postId) => postId !== id): [...prevl, id]);
-  };
+  
+  function toggleLike(id) {
+    axios.patch(`http://localhost:3019/api/post/modify/${id}/${id_user}`)
+      .then((res) => {
+        const updatedPost = res.data;
+  
+        setPosts((prevPosts) => 
+          prevPosts.map((post) => 
+            post.id === updatedPost.id 
+              ? { ...post, likes: updatedPost.likes, liked: updatedPost.liked } 
+              : post
+          )
+        );
+  
+        setLikedPosts((prevLikes) => 
+          prevLikes.includes(id) 
+            ? prevLikes.filter((postId) => postId !== id) 
+            : [...prevLikes, id]
+        );
+      })
+      .catch((err) => {
+        if (err.status=400) {
+          alert("user need to be connected first")
+        }
+        else{
+          console.error("Error updating like:", err);
+          alert("An error occurred while liking the post.");
+        }
+       
+      });
+      seti(i+1)
+  }
+  
 
   const toggleSave = (id, post) => {
-    setSavedPosts((prevp) =>prevp.includes(id)? prevp.filter((postId) => postId !== id): [...prevp, id]);
-    dispatch(save(post));
+    const isSaved = savedPosts.includes(id);
+  
+    if (isSaved) {
+      setSavedPosts((prevPosts) => prevPosts.filter((postId) => postId !== id));
+    } else {
+      setSavedPosts((prevPosts) => [...prevPosts, id]);
+      dispatch(save(post)); 
+    }
+      seti(i+1)
   };
+  
 
   return (
     <div className="container mt-4">
