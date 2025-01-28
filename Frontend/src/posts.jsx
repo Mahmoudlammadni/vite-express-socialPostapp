@@ -4,40 +4,64 @@ import { useDispatch } from "react-redux";
 import { save } from "./action";
 
 export default function Post() {
-  const [post, setpost] = useState([]);
-  const dis = useDispatch()
+  const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [savedPosts, setSavedPosts] = useState([]);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     axios
       .get("http://localhost:3019/api/post")
-      .then((res) => setpost(res.data))
+      .then((res) => setPosts(res.data))
       .catch((err) => console.log(err));
   }, []);
+
+  const toggleLike = (id) => {
+    setLikedPosts((prevl) =>
+      prevl.includes(id)? prevl.filter((postId) => postId !== id): [...prevl, id]);
+  };
+
+  const toggleSave = (id, post) => {
+    setSavedPosts((prevp) =>prevp.includes(id)? prevp.filter((postId) => postId !== id): [...prevp, id]);
+    dispatch(save(post));
+  };
+
   return (
     <div className="container mt-4">
       <div className="row g-4">
-        {post.map((p,i) => {
-          return (
-            <div className="col-md-4" key={i}>
-              <div className="card shadow-sm border-light rounded">
-                <img className="card-img-top" src={p.img} alt="Card image cap" />
-                <div className="card-body d-flex flex-column justify-content-between">
-                  <p className="card-text">{p.description}</p> 
-                  <div className="d-flex align-items-center justify-content-between mt-3">
-                    <p className="m-0">{p.likes} likes</p>
-                    <div className="d-flex">
-                      <button className="btn btn-outline-danger d-flex align-items-center me-2">
-                        <i className="fas fa-heart me-2"></i> Like
-                      </button>
-                      <button onClick={()=>dis(save(p))} className="btn btn-outline-primary d-flex align-items-center">
-                        <i className="fas fa-bookmark me-2"></i> Save
-                      </button>
-                    </div>
+        {posts.map((post, i) => (
+          <div className="col-md-4" key={i}>
+            <div className="card shadow-sm border-light rounded">
+              <img
+                className="card-img-top"
+                src={post.img}
+                alt="Card image cap"
+              />
+              <div className="card-body d-flex flex-column justify-content-between">
+                <p className="card-text">{post.description}</p>
+                <div className="d-flex align-items-center justify-content-between mt-3">
+                  <p className="m-0">{post.likes} likes</p>
+                  <div className="d-flex">
+                    <button onClick={() => toggleLike(post.id)} className={`btn d-flex align-items-center me-2 ${
+                        likedPosts.includes(post.id) ? "btn-danger text-white" : "btn-outline-danger"}`}
+                    >
+                      <i
+                        className={`fas fa-heart me-2 ${likedPosts.includes(post.id) ? "text-white" : ""}`} ></i>
+                      {likedPosts.includes(post.id) ? "Liked" : "Like"}
+                    </button>
+                    <button onClick={() => toggleSave(post.id, post)}className={`btn d-flex align-items-center ${
+                        savedPosts.includes(post.id)? "btn-primary text-white": "btn-outline-primary"}`}
+                    >
+                      <i
+                        className={`fas fa-bookmark me-2 ${savedPosts.includes(post.id) ? "text-white" : ""}`}></i>
+                      {savedPosts.includes(post.id) ? "Saved" : "Save"}
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
